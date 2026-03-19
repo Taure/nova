@@ -1,15 +1,19 @@
-%% @doc Logger filter for redacting sensitive parameters from log output.
-%%
-%% Configurable via application environment:
-%%   {nova, [{filter_parameters, [<<"password">>, <<"secret">>, <<"token">>]}]}
-%%
-%% Default filtered parameters: password, secret, token, api_key, authorization.
-%%
-%% Usage in sys.config logger configuration:
-%%   {kernel, [{logger, [{handler, default, logger_std_h,
-%%     #{filters => [{nova_param_filter,
-%%       {fun nova_log_filter:filter/2, #{}}}]}}]}]}
 -module(nova_log_filter).
+-moduledoc """
+Logger filter for redacting sensitive parameters from log output.
+
+Configurable via application environment:
+
+    {nova, [{filter_parameters, [<<"password">>, <<"secret">>, <<"token">>]}]}
+
+Default filtered parameters: password, secret, token, api_key, authorization.
+
+Usage in sys.config logger configuration:
+
+    {kernel, [{logger, [{handler, default, logger_std_h,
+      #{filters => [{nova_param_filter,
+        {fun nova_log_filter:filter/2, #{}}}]}}]}]}
+""".
 
 -export([
          filter/2,
