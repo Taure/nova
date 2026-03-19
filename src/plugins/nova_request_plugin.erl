@@ -80,6 +80,8 @@ modulate_state(Req = #{headers := #{<<"content-type">> := <<"application/json", 
     %% Decode the data
     JsonLib = nova:get_env(json_lib, json),
     try JsonLib:decode(Body) of
+        {ok, JSON} ->
+            modulate_state(Req#{json => JSON}, Tl, State);
         JSON ->
             modulate_state(Req#{json => JSON}, Tl, State)
     catch

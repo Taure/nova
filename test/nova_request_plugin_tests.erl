@@ -100,6 +100,28 @@ modulate_state_decode_json_post_test_() ->
      end}.
 
 %%====================================================================
+%% modulate_state/3 — decode_json_body with {ok, JSON} return (thoas-style)
+%%====================================================================
+
+modulate_state_decode_json_ok_tuple_test_() ->
+    {setup,
+     fun() ->
+         Prev = nova_test_helper:setup_nova_env(),
+         application:set_env(nova, json_lib, nova_json_ok_tuple_mock),
+         Prev
+     end,
+     ?CLEANUP,
+     fun() ->
+         Req = nova_test_helper:mock_req(<<"POST">>, <<"/">>),
+         Req1 = nova_test_helper:with_content_type(<<"application/json">>, Req),
+         Req2 = Req1#{body => <<"{\"name\":\"test\"}">>, has_body => true},
+         {ok, Req3, state} = nova_request_plugin:modulate_state(
+             Req2, [{decode_json_body, true}], state),
+         JSON = maps:get(json, Req3),
+         ?assertEqual(<<"test">>, maps:get(<<"name">>, JSON))
+     end}.
+
+%%====================================================================
 %% modulate_state/3 — decode_json_body on POST with empty body -> stop
 %%====================================================================
 
